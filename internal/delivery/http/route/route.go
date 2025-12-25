@@ -32,9 +32,8 @@ func (c *RouteConfig) SetupGuestRoute() {
 }
 
 func (c *RouteConfig) SetupAuthAdminRoute() {
-	c.App.Use(c.AuthAdminMiddleware)
-	// GET /api/driver
-	c.App.Get("/api/admin", func(ctx *fiber.Ctx) error {
+	admin := c.App.Group("/api/admin", c.AuthAdminMiddleware)
+	admin.Get("/", func(ctx *fiber.Ctx) error {
 		return ctx.JSON(fiber.Map{
 			"message": "Admin API is accessible",
 		})
@@ -42,10 +41,8 @@ func (c *RouteConfig) SetupAuthAdminRoute() {
 
 }
 func (c *RouteConfig) SetupAuthDriverRoute() {
-	c.App.Use(c.AuthDriverMiddleware)
-
-	// GET /api/driver
-	c.App.Get("/api/driver", func(ctx *fiber.Ctx) error {
+	driver := c.App.Group("/api/driver", c.AuthDriverMiddleware)
+	driver.Get("/", func(ctx *fiber.Ctx) error {
 		return ctx.JSON(fiber.Map{
 			"message": "Driver API is accessible",
 		})
@@ -54,32 +51,31 @@ func (c *RouteConfig) SetupAuthDriverRoute() {
 }
 
 func (c *RouteConfig) SetupAuthSuperAdminRoute() {
-	c.App.Use(c.AuthSuperAdminMiddleware)
-
-	c.App.Get("/api/superadmin", func(ctx *fiber.Ctx) error {
+	superAdmin := c.App.Group("/api/superadmin", c.AuthSuperAdminMiddleware)
+	superAdmin.Get("/", func(ctx *fiber.Ctx) error {
 		return ctx.JSON(fiber.Map{
-			"message": "superadmin API is accessible",
+			"message": "Superadmin API is accessible",
 		})
 	})
 
 }
 
 func (c *RouteConfig) SetupAuthRoute() {
-	c.App.Use(c.AuthAdminMiddleware)
+	admin := c.App.Group("/api/admin", c.AuthAdminMiddleware)
 
-	c.App.Delete("/api/users", c.UserController.Logout)
-	c.App.Patch("/api/users/_current", c.UserController.Update)
-	c.App.Get("api/users/_current", c.UserController.Current)
+	admin.Delete("/api/users", c.UserController.Logout)
+	admin.Patch("/api/users/_current", c.UserController.Update)
+	admin.Get("api/users/_current", c.UserController.Current)
 
-	c.App.Get("/api/contacts", c.ContactController.List)
-	c.App.Post("/api/contacts", c.ContactController.Create)
-	c.App.Put("/api/contacts/:contactId", c.ContactController.Update)
-	c.App.Get("/api/contacts/:contactId", c.ContactController.Get)
-	c.App.Delete("/api/contacts/:contactId", c.ContactController.Delete)
+	admin.Get("/api/contacts", c.ContactController.List)
+	admin.Post("/api/contacts", c.ContactController.Create)
+	admin.Put("/api/contacts/:contactId", c.ContactController.Update)
+	admin.Get("/api/contacts/:contactId", c.ContactController.Get)
+	admin.Delete("/api/contacts/:contactId", c.ContactController.Delete)
 
-	c.App.Get("/api/contacts/:contactId/addresses", c.AddressController.List)
-	c.App.Post("/api/contacts/:contactId/addresses", c.AddressController.Create)
-	c.App.Put("api/contacts/:contactId/addresses/:addressId", c.AddressController.Update)
-	c.App.Get("/api/contacts/:contactId/addresses/:addressId", c.AddressController.Get)
-	c.App.Delete("/api/contacts/:contactId/addresses/:addressId", c.AddressController.Delete)
+	admin.Get("/api/contacts/:contactId/addresses", c.AddressController.List)
+	admin.Post("/api/contacts/:contactId/addresses", c.AddressController.Create)
+	admin.Put("api/contacts/:contactId/addresses/:addressId", c.AddressController.Update)
+	admin.Get("/api/contacts/:contactId/addresses/:addressId", c.AddressController.Get)
+	admin.Delete("/api/contacts/:contactId/addresses/:addressId", c.AddressController.Delete)
 }

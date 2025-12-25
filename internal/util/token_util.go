@@ -10,7 +10,6 @@ import (
 	"time"
 
 	"github.com/gofiber/fiber/v2"
-	"github.com/gofiber/fiber/v2/log"
 	"github.com/golang-jwt/jwt/v5"
 )
 
@@ -90,7 +89,6 @@ func (t TokenUtil) ValidateAdminRoleJWT(context *fiber.Ctx) error {
 	if !ok {
 		return fiber.ErrUnauthorized
 	}
-	log.Debug(roleVal)
 	//userRole := int(roleVal)
 	if ok && token.Valid && roleVal == "1" {
 		return nil
@@ -125,7 +123,7 @@ func (t TokenUtil) ValidateSuperAdminRoleJWT(context *fiber.Ctx) error {
 		return nil
 	}
 
-	return errors.New("invalid customer or admin token provided")
+	return errors.New("invalid superadmin token provided")
 }
 
 func (t TokenUtil) ValidateDriverRoleJWT(context *fiber.Ctx) error {
@@ -140,7 +138,7 @@ func (t TokenUtil) ValidateDriverRoleJWT(context *fiber.Ctx) error {
 		return nil
 	}
 
-	return errors.New("invalid customer or admin token provided")
+	return errors.New("invalid driver token provided")
 }
 
 func (t TokenUtil) ParseToken(ctx context.Context, jwtToken string) (*model.Auth, error) {
