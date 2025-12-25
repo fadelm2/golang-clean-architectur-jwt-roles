@@ -1,7 +1,6 @@
 package config
 
 import (
-	"fmt"
 	"golang-clean-architecture/internal/delivery/http"
 	"golang-clean-architecture/internal/delivery/http/middleware"
 	"golang-clean-architecture/internal/delivery/http/route"
@@ -35,8 +34,6 @@ func Bootstrap(config *BootstrapConfig) {
 	contactRepository := repository.NewContactRepository(config.Log)
 	addressRepository := repository.NewAddressRepository(config.Log)
 	tokenSecretKey := config.SecretKey
-
-	fmt.Printf("JWT Secret Key: '%s'\n", tokenSecretKey)
 
 	//setup producer
 	userProducer := messaging.NewUserProducer(config.Producer, config.Log)
