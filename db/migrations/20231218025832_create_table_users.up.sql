@@ -1,15 +1,14 @@
-create table users
-(
-    id           varchar(100) not null
-        primary key,
-    role_id      int         not null,
-    username     varchar(255) not null,
-    email        varchar(255) not null,
-    password     varchar(255) not null,
-    company_name varchar(255) not null,
-    updated_at   bigint       not null,
-    created_at   bigint       not null
-); engine = innodb;
+CREATE TABLE users (
+                       id           VARCHAR(100) NOT NULL PRIMARY KEY,
+                       role_id      INT NOT NULL,
+                       username     VARCHAR(255) NOT NULL,
+                       email        VARCHAR(255) NOT NULL,
+                       password     VARCHAR(255) NOT NULL,
+                       company_name VARCHAR(255) NOT NULL,
+                       updated_at   BIGINT NOT NULL,
+                       created_at   BIGINT NOT NULL
+) ENGINE=InnoDB;
+
 INSERT INTO users (id, role_id, username, email, password, company_name, updated_at, created_at) VALUES
                                                                                                      ('noc1', 1, 'admin_user', 'admin@greenet.com', '$2a$10$Z4MR5mDWzrDxVCCasdu5VeTf5DbYcsyMb/aMeP4BlDFoOeLO2.R9y', 'GREENET', UNIX_TIMESTAMP(), UNIX_TIMESTAMP()),
                                                                                                      ('admin1', 1, 'admin_user', 'user@greenet.com', '$2a$10$Z4MR5mDWzrDxVCCasdu5VeTf5DbYcsyMb/aMeP4BlDFoOeLO2.R9y', 'GREENET', UNIX_TIMESTAMP(), UNIX_TIMESTAMP()),
