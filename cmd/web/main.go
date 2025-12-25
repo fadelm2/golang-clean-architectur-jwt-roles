@@ -11,14 +11,16 @@ func main() {
 	db := config.NewDatabase(viperConfig, log)
 	validate := config.NewValidator(viperConfig)
 	app := config.NewFiber(viperConfig)
+	secretkey := config.SecretKey(viperConfig)
 	//producer := config.NewKafkaProducer(viperConfig, log)
 
 	config.Bootstrap(&config.BootstrapConfig{
-		DB:       db,
-		App:      app,
-		Log:      log,
-		Validate: validate,
-		Config:   viperConfig,
+		DB:        db,
+		App:       app,
+		Log:       log,
+		Validate:  validate,
+		Config:    viperConfig,
+		SecretKey: secretkey,
 		//Producer: producer,
 	})
 

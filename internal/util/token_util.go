@@ -20,11 +20,11 @@ func NewTokenUtil(secretKey string) *TokenUtil {
 }
 
 func (t TokenUtil) CreateToken(ctx context.Context, auth *model.Auth) (string, error) {
-	token := jwt.NewWithClaims(jwt.SigningMethodES256, jwt.MapClaims{
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 		"id":   auth.ID,
 		"role": auth.RoleID,
 		"iat":  time.Now().Unix(),
-		"eat":  time.Now().Add(time.Hour * 24 * 30).UnixMilli(),
+		"exp":  time.Now().Add(24 * time.Hour).Unix(),
 	})
 
 	jwtToken, err := token.SignedString([]byte(t.SecretKey))

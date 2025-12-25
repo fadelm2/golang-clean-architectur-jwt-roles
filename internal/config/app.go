@@ -1,6 +1,7 @@
 package config
 
 import (
+	"fmt"
 	"golang-clean-architecture/internal/delivery/http"
 	"golang-clean-architecture/internal/delivery/http/middleware"
 	"golang-clean-architecture/internal/delivery/http/route"
@@ -25,7 +26,7 @@ type BootstrapConfig struct {
 	Validate  *validator.Validate
 	Config    *viper.Viper
 	Producer  *kafka.Producer
-	secretKey string
+	SecretKey string
 }
 
 func Bootstrap(config *BootstrapConfig) {
@@ -33,7 +34,10 @@ func Bootstrap(config *BootstrapConfig) {
 	userRepository := repository.NewUserRepository(config.Log)
 	contactRepository := repository.NewContactRepository(config.Log)
 	addressRepository := repository.NewAddressRepository(config.Log)
-	tokenSecretKey := config.secretKey
+	tokenSecretKey := config.SecretKey
+
+	fmt.Printf("JWT Secret Key: '%s'\n", tokenSecretKey)
+
 	//setup producer
 	userProducer := messaging.NewUserProducer(config.Producer, config.Log)
 	contactProducer := messaging.NewContactProducer(config.Producer, config.Log)
