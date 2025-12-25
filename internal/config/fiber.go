@@ -1,8 +1,6 @@
 package config
 
 import (
-	"golang-clean-architecture/internal/delivery/http/middleware"
-
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/spf13/viper"
@@ -41,7 +39,7 @@ func NewFiber(config *viper.Viper) *fiber.App {
 		//   ExposeHeaders:    "Origin",
 	})
 	app.Use(corsSettings)
-	app.Use(middleware.RequestLogger())
+	//app.Use(middleware.RequestLogger())
 
 	return app
 }

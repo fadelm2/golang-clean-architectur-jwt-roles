@@ -14,8 +14,8 @@ POST http://localhost:3000/api/users/_login
 Content-Type: application/json
 
 {
-  "id": "joko",
-  "password": "joko"
+  "id": "noc1",
+  "password": "123457"
 }
 
 ### Get user profile
