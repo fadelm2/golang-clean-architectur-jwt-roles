@@ -57,13 +57,15 @@ func Bootstrap(config *BootstrapConfig) {
 
 	// setup middleware
 	authMiddleware := middleware.NewAuth(userUseCase, tokenUtil)
+	requestLogMiddleware := middleware.NewRequestLogger(userUseCase)
 
 	routeConfig := route.RouteConfig{
-		App:               config.App,
-		UserController:    userController,
-		ContactController: ContactController,
-		AddressController: addressController,
-		AuthMiddleWare:    authMiddleware,
+		App:                     config.App,
+		UserController:          userController,
+		ContactController:       ContactController,
+		AddressController:       addressController,
+		AuthMiddleWare:          authMiddleware,
+		RequestLoggerMiddleware: requestLogMiddleware,
 	}
 	routeConfig.Setup()
 }

@@ -17,6 +17,14 @@ Content-Type: application/json
   "id": "noc1",
   "password": "123457"
 }
+###
+POST http://localhost:3000/api/users/_login
+Content-Type: application/json
+
+{
+"id": "",
+"password": "123457"
+}
 
 ### Get user profile
 ### Get user profile

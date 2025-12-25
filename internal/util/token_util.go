@@ -2,6 +2,7 @@ package util
 
 import (
 	"context"
+	"fmt"
 	"golang-clean-architecture/internal/model"
 	"time"
 
@@ -56,5 +57,19 @@ func (t TokenUtil) ParseToken(ctx context.Context, jwtToken string) (*model.Auth
 		RoleID: roleId,
 	}
 	return auth, nil
+}
 
+func getToken(ctx *fiber.Ctx) (*jwt.Token, error) {
+	tokenString, err := getTokenFromRequest(ctx)
+	if err != nil {
+		return nil, err
+	}
+	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
+		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+			return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
+		}
+
+		return privateKey, nil
+	})
+	return token, err
 }

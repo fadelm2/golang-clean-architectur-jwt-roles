@@ -1,16 +1,18 @@
 package route
 
 import (
-	"github.com/gofiber/fiber/v2"
 	"golang-clean-architecture/internal/delivery/http"
+
+	"github.com/gofiber/fiber/v2"
 )
 
 type RouteConfig struct {
-	App               *fiber.App
-	UserController    *http.UserController
-	ContactController *http.ContactController
-	AddressController *http.AddressController
-	AuthMiddleWare    fiber.Handler
+	App                     *fiber.App
+	UserController          *http.UserController
+	ContactController       *http.ContactController
+	AddressController       *http.AddressController
+	AuthMiddleWare          fiber.Handler
+	RequestLoggerMiddleware fiber.Handler
 }
 
 func (c *RouteConfig) Setup() {
@@ -25,6 +27,7 @@ func (c *RouteConfig) SetupGuestRoute() {
 
 func (c *RouteConfig) SetupAuthRoute() {
 	c.App.Use(c.AuthMiddleWare)
+	c.App.Use(c.RequestLoggerMiddleware)
 	c.App.Delete("/api/users", c.UserController.Logout)
 	c.App.Patch("/api/users/_current", c.UserController.Update)
 	c.App.Get("api/users/_current", c.UserController.Current)

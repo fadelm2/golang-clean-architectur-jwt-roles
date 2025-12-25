@@ -39,7 +39,6 @@ func NewFiber(config *viper.Viper) *fiber.App {
 		//   ExposeHeaders:    "Origin",
 	})
 	app.Use(corsSettings)
-	//app.Use(middleware.RequestLogger())
 
 	return app
 }
