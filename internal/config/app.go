@@ -57,15 +57,24 @@ func Bootstrap(config *BootstrapConfig) {
 
 	// setup middleware
 	authMiddleware := middleware.NewAuth(userUseCase, tokenUtil)
+
 	requestLogMiddleware := middleware.NewRequestLogger(userUseCase)
+	authMiddlewareAdmin := middleware.NewAuthAdmin(userUseCase, tokenUtil)
+	authMiddlewareCustomer := middleware.NewAuthCustomer(userUseCase, tokenUtil)
+	authMiddlewareSuperAdmin := middleware.NewAuthSuperAdmin(userUseCase, tokenUtil)
+	authMiddlewareDriver := middleware.NewAuthDriver(userUseCase, tokenUtil)
 
 	routeConfig := route.RouteConfig{
-		App:                     config.App,
-		UserController:          userController,
-		ContactController:       ContactController,
-		AddressController:       addressController,
-		AuthMiddleWare:          authMiddleware,
-		RequestLoggerMiddleware: requestLogMiddleware,
+		App:                      config.App,
+		UserController:           userController,
+		ContactController:        ContactController,
+		AddressController:        addressController,
+		AuthMiddleWare:           authMiddleware,
+		AuthAdminMiddleware:      authMiddlewareAdmin,
+		AuthCustomerMiddleware:   authMiddlewareCustomer,
+		AuthSuperAdminMiddleware: authMiddlewareSuperAdmin,
+		AuthDriverMiddleware:     authMiddlewareDriver,
+		RequestLoggerMiddleware:  requestLogMiddleware,
 	}
 	routeConfig.Setup()
 }

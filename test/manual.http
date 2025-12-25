@@ -28,7 +28,7 @@ Content-Type: application/json
 
 ### Get user profile
 ### Get user profile
-GET http://localhost:3000/api/users/_current
+GET http://localhost:3000/api/admin
 Accept: application/json
 Authorization: {{token}}
 
