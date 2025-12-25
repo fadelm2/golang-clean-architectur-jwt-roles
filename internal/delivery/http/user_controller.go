@@ -1,11 +1,12 @@
 package http
 
 import (
-	"github.com/gofiber/fiber/v2"
-	"github.com/sirupsen/logrus"
 	"golang-clean-architecture/internal/delivery/http/middleware"
 	"golang-clean-architecture/internal/model"
 	"golang-clean-architecture/internal/usecase"
+
+	"github.com/gofiber/fiber/v2"
+	"github.com/sirupsen/logrus"
 )
 
 type UserController struct {
@@ -51,7 +52,19 @@ func (c *UserController) Login(ctx *fiber.Ctx) error {
 		return err
 	}
 
+	ctx.Cookie(&fiber.Cookie{
+		Name:     "token",
+		Value:    response.Token,
+		Path:     "/",
+		MaxAge:   1 * 18000,
+		Secure:   false,
+		HTTPOnly: true,
+		//SameSite: "None",
+		//Domain:   ".fadelweb.site", // //
+	}) // jika tidak ada domain. tidak usah pakai domain
+
 	return ctx.JSON(model.WebResponse[*model.UserResponse]{Data: response})
+
 }
 
 func (c *UserController) Current(ctx *fiber.Ctx) error {

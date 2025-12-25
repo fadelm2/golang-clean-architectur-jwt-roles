@@ -1,30 +1,72 @@
 package route
 
 import (
-	"github.com/gofiber/fiber/v2"
 	"golang-clean-architecture/internal/delivery/http"
+
+	"github.com/gofiber/fiber/v2"
 )
 
 type RouteConfig struct {
-	App               *fiber.App
-	UserController    *http.UserController
-	ContactController *http.ContactController
-	AddressController *http.AddressController
-	AuthMiddleWare    fiber.Handler
+	App                      *fiber.App
+	UserController           *http.UserController
+	ContactController        *http.ContactController
+	AddressController        *http.AddressController
+	AuthCustomerMiddleware   fiber.Handler
+	AuthAdminMiddleware      fiber.Handler
+	AuthSuperAdminMiddleware fiber.Handler
+	AuthDriverMiddleware     fiber.Handler
+	AuthMiddleWare           fiber.Handler
+	RequestLoggerMiddleware  fiber.Handler
 }
 
 func (c *RouteConfig) Setup() {
 	c.SetupGuestRoute()
 	c.SetupAuthRoute()
+	c.SetupAuthAdminRoute()
+	c.SetupAuthSuperAdminRoute()
+	c.SetupAuthDriverRoute()
 }
 
 func (c *RouteConfig) SetupGuestRoute() {
-	c.App.Post("/api/users", c.UserController.Register)
 	c.App.Post("/api/users/_Login", c.UserController.Login)
 }
 
+func (c *RouteConfig) SetupAuthAdminRoute() {
+	c.App.Use(c.AuthAdminMiddleware)
+	// GET /api/driver
+	c.App.Get("/api/admin", func(ctx *fiber.Ctx) error {
+		return ctx.JSON(fiber.Map{
+			"message": "Admin API is accessible",
+		})
+	})
+
+}
+func (c *RouteConfig) SetupAuthDriverRoute() {
+	c.App.Use(c.AuthDriverMiddleware)
+
+	// GET /api/driver
+	c.App.Get("/api/driver", func(ctx *fiber.Ctx) error {
+		return ctx.JSON(fiber.Map{
+			"message": "Driver API is accessible",
+		})
+	})
+
+}
+
+func (c *RouteConfig) SetupAuthSuperAdminRoute() {
+	c.App.Use(c.AuthSuperAdminMiddleware)
+
+	c.App.Get("/api/superadmin", func(ctx *fiber.Ctx) error {
+		return ctx.JSON(fiber.Map{
+			"message": "superadmin API is accessible",
+		})
+	})
+
+}
+
 func (c *RouteConfig) SetupAuthRoute() {
-	c.App.Use(c.AuthMiddleWare)
+	c.App.Use(c.AuthAdminMiddleware)
+
 	c.App.Delete("/api/users", c.UserController.Logout)
 	c.App.Patch("/api/users/_current", c.UserController.Update)
 	c.App.Get("api/users/_current", c.UserController.Current)

@@ -14,25 +14,33 @@ POST http://localhost:3000/api/users/_login
 Content-Type: application/json
 
 {
-  "id": "joko",
-  "password": "joko"
+  "id": "noc1",
+  "password": "123457"
+}
+###
+POST http://localhost:3000/api/users/_login
+Content-Type: application/json
+
+{
+"id": "",
+"password": "123457"
 }
 
 ### Get user profile
 ### Get user profile
+GET http://localhost:3000/api/admin
+Accept: application/json
+Authorization: Bearer {{token}}
+
+### Get Users
 GET http://localhost:3000/api/users/_current
 Accept: application/json
-Authorization: {{token}}
-
-### Logour User
-DELETE http://localhost:3000/api/users
-Accept: application/json
-Authorization: {{token}}
+Authorization: Bearer {{token}}
 
 ### Update user
 PATCH http://localhost:3000/api/users/_current
 Content-Type: application/json
-Authorization: {{token}}
+Authorization: Bearer {{token}}
 
 {
   "name": "Joko Udin"
