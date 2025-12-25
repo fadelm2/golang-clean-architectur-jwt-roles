@@ -105,8 +105,8 @@ func (t TokenUtil) ValidateCustomerRoleJWT(context *fiber.Ctx) error {
 	}
 
 	claims, ok := token.Claims.(jwt.MapClaims)
-	userRole := uint(claims["role"].(float64))
-	if ok && token.Valid && userRole == 2 || userRole == 1 {
+	userRole := claims["role"].(string)
+	if ok && token.Valid && userRole == "2" || userRole == "1" {
 		return nil
 	}
 
@@ -120,8 +120,8 @@ func (t TokenUtil) ValidateSuperAdminRoleJWT(context *fiber.Ctx) error {
 	}
 
 	claims, ok := token.Claims.(jwt.MapClaims)
-	userRole := uint(claims["role"].(float64))
-	if ok && token.Valid && userRole == 99 {
+	userRole := claims["role"].(string)
+	if ok && token.Valid && userRole == "99" {
 		return nil
 	}
 
@@ -135,8 +135,8 @@ func (t TokenUtil) ValidateDriverRoleJWT(context *fiber.Ctx) error {
 	}
 
 	claims, ok := token.Claims.(jwt.MapClaims)
-	userRole := uint(claims["role"].(float64))
-	if ok && token.Valid && userRole == 4 {
+	userRole := claims["role"].(string)
+	if ok && token.Valid && userRole == "4" {
 		return nil
 	}
 
