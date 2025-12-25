@@ -30,17 +30,17 @@ Content-Type: application/json
 ### Get user profile
 GET http://localhost:3000/api/admin
 Accept: application/json
-Authorization: {{token}}
+Authorization: Bearer {{token}}
 
-### Logour User
-DELETE http://localhost:3000/api/users
+### Get Users
+GET http://localhost:3000/api/users/_current
 Accept: application/json
-Authorization: {{token}}
+Authorization: Bearer {{token}}
 
 ### Update user
 PATCH http://localhost:3000/api/users/_current
 Content-Type: application/json
-Authorization: {{token}}
+Authorization: Bearer {{token}}
 
 {
   "name": "Joko Udin"

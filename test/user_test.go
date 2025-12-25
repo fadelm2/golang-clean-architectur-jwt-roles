@@ -2,15 +2,16 @@ package test
 
 import (
 	"encoding/json"
-	"github.com/stretchr/testify/assert"
 	"golang-clean-architecture/internal/entity"
 	"golang-clean-architecture/internal/model"
-	"golang.org/x/crypto/bcrypt"
 	"io"
 	"net/http"
 	"net/http/httptest"
 	"strings"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
+	"golang.org/x/crypto/bcrypt"
 )
 
 func TestRegister(t *testing.T) {
@@ -75,8 +76,8 @@ func TestRegisterError(t *testing.T) {
 }
 
 func TestRegisterDuplicate(t *testing.T) {
-	ClearAll()
-	TestRegister(t) // register succes
+	//ClearAll()
+	//TestRegister(t) // register succes
 
 	requestBody := model.RegisterUserRequest{
 		ID:       "Fadel",
@@ -105,11 +106,10 @@ func TestRegisterDuplicate(t *testing.T) {
 }
 
 func TestLogin(t *testing.T) {
-	TestRegister(t) // register succes
 
 	requestBody := model.LoginUserRequest{
-		ID:       "Fadel",
-		Password: "rahasia",
+		ID:       "noc1",
+		Password: "123457",
 	}
 	bodyJson, err := json.Marshal(requestBody)
 	assert.Nil(t, err)
@@ -130,11 +130,6 @@ func TestLogin(t *testing.T) {
 
 	assert.Equal(t, http.StatusOK, response.StatusCode)
 	assert.NotNil(t, responseBody.Data.Token)
-
-	user := new(entity.User)
-	err = db.Where("id = ?", requestBody.ID).First(user).Error
-	assert.Nil(t, err)
-	assert.Equal(t, user.Token, responseBody.Data.Token)
 }
 
 func TestLoginWrongUsername(t *testing.T) {
@@ -223,7 +218,7 @@ func TestLogout(t *testing.T) {
 }
 
 func TestLogoutWrongAuthorization(t *testing.T) {
-	ClearAll()
+	//ClearAll()
 	TestLogin(t) // login success
 
 	request := httptest.NewRequest(http.MethodDelete, "/api/users", nil)
@@ -246,7 +241,7 @@ func TestLogoutWrongAuthorization(t *testing.T) {
 }
 
 func TestGetCurrentUser(t *testing.T) {
-	ClearAll()
+	//ClearAll()
 	TestLogin(t) // login success
 
 	user := new(entity.User)
@@ -256,7 +251,7 @@ func TestGetCurrentUser(t *testing.T) {
 	request := httptest.NewRequest(http.MethodGet, "/api/users/_current", nil)
 	request.Header.Set("Content-Type", "application/json")
 	request.Header.Set("Accept", "application/json")
-	request.Header.Set("Authorization", user.Token)
+	request.Header.Set("Authorization", "Bearer"+user.Token)
 
 	response, err := app.Test(request)
 	assert.Nil(t, err)

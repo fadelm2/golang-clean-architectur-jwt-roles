@@ -6,7 +6,7 @@ type User struct {
 	Password    string    `gorm:"column:password"`
 	Name        string    `gorm:"column:username"`
 	Email       string    `gorm:"column:email"`
-	RoleID      int       `gorm:"column:role_id"`
+	RoleID      string    `gorm:"column:role_id"`
 	CompanyName string    `gorm:"column:company_name"`
 	Token       string    `gorm:"-"`
 	RegionId    string    `gorm:"column:region_id"`

@@ -4,61 +4,36 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"golang-clean-architecture/internal/entity"
 	"golang-clean-architecture/internal/model"
 	"strings"
 	"time"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/log"
 	"github.com/golang-jwt/jwt/v5"
 )
 
 type TokenUtil struct {
-	SecretKey string
+	SecretKey []byte
 }
 
 func NewTokenUtil(secretKey string) *TokenUtil {
 	return &TokenUtil{
-		SecretKey: secretKey,
+		SecretKey: []byte(secretKey),
 	}
 }
 
-func (t TokenUtil) CreateToken(ctx context.Context, auth *model.Auth) (string, error) {
+func (t TokenUtil) GenerateJWT(user *entity.User) (string, error) {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-		"id":     auth.ID,
-		"role":   auth.RoleID,
-		"iat":    time.Now().Unix(),
-		"expire": time.Now().Add(24 * time.Hour).Unix(),
+		"id":        user.ID,
+		"role":      user.RoleID,
+		"name":      user.Name,
+		"region_id": user.RegionId,
+		"iat":       time.Now().Unix(),
+		"exp":       time.Now().Add(30 * time.Minute).Unix(),
 	})
-
-	jwtToken, err := token.SignedString([]byte(t.SecretKey))
-	if err != nil {
-		return "", err
-	}
-
-	return jwtToken, nil
-}
-
-func (t TokenUtil) ParseToken(ctx context.Context, jwtToken string) (*model.Auth, error) {
-	token, err := jwt.Parse(jwtToken, func(token *jwt.Token) (interface{}, error) {
-		return []byte(t.SecretKey), nil
-	})
-	if err != nil {
-		return nil, fiber.ErrUnauthorized
-	}
-	claims := token.Claims.(jwt.MapClaims)
-
-	expire := claims["expire"].(float64)
-	if int64(expire) < time.Now().UnixMilli() {
-		return nil, fiber.ErrUnauthorized
-	}
-
-	id := claims["id"].(string)
-	roleId := claims["role"].(int)
-	auth := &model.Auth{
-		ID:     id,
-		RoleID: roleId,
-	}
-	return auth, nil
+	return token.SignedString(t.SecretKey)
 }
 
 func (t TokenUtil) getToken(ctx *fiber.Ctx) (*jwt.Token, error) {
@@ -111,8 +86,13 @@ func (t TokenUtil) ValidateAdminRoleJWT(context *fiber.Ctx) error {
 	}
 
 	claims, ok := token.Claims.(jwt.MapClaims)
-	userRole := uint(claims["role"].(int))
-	if ok && token.Valid && userRole == 1 {
+	roleVal, ok := claims["role"].(string)
+	if !ok {
+		return fiber.ErrUnauthorized
+	}
+	log.Debug(roleVal)
+	//userRole := int(roleVal)
+	if ok && token.Valid && roleVal == "1" {
 		return nil
 	}
 	return errors.New("invalid admin token provided")
@@ -161,4 +141,44 @@ func (t TokenUtil) ValidateDriverRoleJWT(context *fiber.Ctx) error {
 	}
 
 	return errors.New("invalid customer or admin token provided")
+}
+
+func (t TokenUtil) ParseToken(ctx context.Context, jwtToken string) (*model.Auth, error) {
+	// 🔹 Buang "Bearer "
+	if strings.HasPrefix(jwtToken, "Bearer ") {
+		jwtToken = strings.TrimPrefix(jwtToken, "Bearer ")
+	}
+	//
+	//token, err := jwt.Parse(jwtToken, func(token *jwt.Token) (interface{}, error) {
+	//	return []byte(t.SecretKey), nil
+	//})
+	token, err := jwt.Parse(jwtToken, func(token *jwt.Token) (interface{}, error) {
+		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+			return nil, fiber.ErrUnauthorized
+		}
+		return t.SecretKey, nil
+	})
+	if err != nil || !token.Valid {
+		return nil, fiber.ErrUnauthorized
+	}
+
+	claims, ok := token.Claims.(jwt.MapClaims)
+	if !ok {
+		return nil, fiber.ErrUnauthorized
+	}
+
+	expire := claims["exp"].(float64)
+	if int64(expire) < time.Now().Unix() {
+		return nil, fiber.ErrUnauthorized
+	}
+
+	id := claims["id"].(string)
+	roleStr, ok := claims["role"].(string)
+
+	auth := &model.Auth{
+		ID:     id,
+		RoleID: roleStr,
+	}
+	return auth, nil
+
 }

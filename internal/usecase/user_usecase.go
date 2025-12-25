@@ -110,17 +110,20 @@ func (c *UserUseCase) Login(ctx context.Context, request *model.LoginUserRequest
 		return nil, fiber.ErrUnauthorized
 	}
 
-	token, err := c.TokenUtil.CreateToken(ctx, &model.Auth{ID: user.ID, RoleID: user.RoleID})
+	jwt, err := c.TokenUtil.GenerateJWT(user)
 	if err != nil {
-		c.Log.Warnf("Failed to create token : %+v", err)
-		return nil, fiber.ErrInternalServerError
+		c.Log.Warnf("Failed to Generate JWT : %+v", err)
+
+		return nil, fiber.ErrBadRequest
 	}
+	user.Token = jwt
+
 	if err := tx.Commit().Error; err != nil {
 		c.Log.Warnf("Failed commit transaction : %+v", err)
 		return nil, fiber.ErrInternalServerError
 	}
 
-	return converter.UserToTokenResponse(&entity.User{Token: token}), nil
+	return converter.UserToTokenResponse(user), nil
 }
 
 func (c *UserUseCase) Current(ctx context.Context, request *model.GetUserRequest) (*model.UserResponse, error) {

@@ -65,8 +65,8 @@ func (c *RouteConfig) SetupAuthSuperAdminRoute() {
 }
 
 func (c *RouteConfig) SetupAuthRoute() {
-	c.App.Use(c.AuthMiddleWare)
-	c.App.Use(c.RequestLoggerMiddleware)
+	c.App.Use(c.AuthAdminMiddleware)
+
 	c.App.Delete("/api/users", c.UserController.Logout)
 	c.App.Patch("/api/users/_current", c.UserController.Update)
 	c.App.Get("api/users/_current", c.UserController.Current)
