@@ -1,0 +1,17 @@
+# Node
+node_modules/
+frontend/node_modules/
+
+# Vite
+frontend/dist/
+dist/
+
+# Env
+.env
+
+# Logs
+*.log
+
+# OS
+.DS_Store
+.idea
