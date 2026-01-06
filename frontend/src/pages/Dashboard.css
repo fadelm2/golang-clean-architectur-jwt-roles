@@ -1,0 +1,36 @@
+.dashboard-container {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.nav-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+    margin-bottom: 40px;
+}
+
+/* Specific grid layout to match the design roughly */
+@media (min-width: 1024px) {
+    .nav-grid {
+        grid-template-columns: repeat(4, 1fr);
+        grid-template-rows: auto auto;
+    }
+
+    /* Make the orange card span 2 columns as in design */
+    .nav-grid> :nth-child(2) {
+        grid-column: span 2;
+    }
+}
+
+.deployment-section h3 {
+    margin-bottom: 20px;
+    font-weight: 500;
+    color: var(--text-secondary);
+}
+
+.deployment-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+}
