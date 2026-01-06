@@ -1,5 +1,6 @@
 import React from 'react';
-import { Bell, Trophy, Maximize, MoreHorizontal, ChevronDown, Menu } from 'lucide-react';
+import { Trophy, Maximize, MoreHorizontal, Menu } from 'lucide-react';
+import NotificationDropdown from '../Notifications/NotificationDropdown';
 import './TopBar.css';
 
 const TopBar = ({ onToggleSidebar }) => {
@@ -16,10 +17,7 @@ const TopBar = ({ onToggleSidebar }) => {
             </div>
 
             <div className="actions-section">
-                <div className="action-button">
-                    <Bell size={18} />
-                    <span className="badge">v2.1.1</span>
-                </div>
+                <NotificationDropdown />
 
                 <div className="action-button">
                     <Trophy size={18} />

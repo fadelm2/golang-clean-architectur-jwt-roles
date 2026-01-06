@@ -63,4 +63,20 @@
     height: 6px;
     background-color: #FFC107;
     border-radius: 50%;
+}.menu-btn {
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    cursor: pointer;
+    padding: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: color 0.2s;
+    border-radius: 8px;
+}
+
+.menu-btn:hover {
+  color: white;
+  background-color: rgba(255, 255, 255, 0.1);
 }
